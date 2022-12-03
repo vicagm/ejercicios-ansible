@@ -1,0 +1,12 @@
+---
+- hosts: all
+  tasks:
+    - debug:
+        msg: play1
+- name: Configuración de red
+  import_playbook: tasks/configure_network.yaml
+- name: Instalación de mariadb en databases
+  import_playbook: tasks/install_mysql.yaml
+- name: Instalación nginx en webservers
+  import_playbook: tasks/install_nginx.yaml
+...

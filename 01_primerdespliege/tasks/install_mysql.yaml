@@ -1,0 +1,119 @@
+---
+- name: Instalación de mariadb
+  hosts: databases
+  vars:
+    - repo_software:
+      - software-properties-common
+      - dirmngr
+      - apt-transport-https
+    - key_url: "https://mariadb.org/mariadb_release_signing_key.asc"
+    - repo_deb: "deb [arch=amd64] https://dlm.mariadb.com/repo/mariadb-server/10.9/repo/ubuntu"
+    - mariadb_packages:
+      - mariadb-server
+      - mariadb-common
+      - python3-mysqldb
+      - python3-openssl
+  vars_files: # importación de variables desde fichero
+    - ../vars/databases/vars.yaml
+  handlers:
+    - name: Flush Priviliges
+      command: mysql -u root -p{{ mysql_root_password }} -e "FLUSH PRIVILEGES"
+  tasks:
+    - name: Update repositories
+      apt: update_cache=yes
+      ignore_errors: yes
+    - name: Install Mariadb Requirements for {{ ansible_facts['os_family'] }} {{ ansible_facts['distribution_release'] }}
+      apt:
+        name: "{{ repo_software_packages }}"
+        state: present
+      when: when: ansible_facts['os_family'] == "Debian"
+    - name: Add MariaDB Repository Key for {{ ansible_facts['os_family'] }} {{ ansible_facts['distribution_release'] }}
+      apt_key:
+        url: "{{ key_url }}"
+        state: present
+      when: when: ansible_facts['os_family'] == "Debian"
+    - name: Add MariaDB Repository for {{ ansible_facts['os_family'] }} {{ ansible_facts['distribution_release'] }}
+      apt_repository:
+        repo: "{{ repo_deb }} {{ ansible_facts['distribution_release'] }}  main"
+        state: present
+        filename: mariadb
+        #register: addmariadbrepo
+      when: when: ansible_facts['os_family'] == "Debian"
+      notify:
+    - name: Update repositories
+      apt: update_cache=yes
+      ignore_errors: yes
+      when: when: ansible_facts['os_family'] == "Debian"
+    - name: Install Mariadb server for {{ ansible_facts['os_family'] }} {{ ansible_facts['distribution_release'] }}
+      apt:
+        name: "{{ mariadb_packages }}"
+        state: present
+      when: when: ansible_facts['os_family'] == "Debian"
+    - name: Servicio arrancado
+      service:
+        name: mariadb
+        state: started
+        enabled: true
+      when: when: ansible_facts['os_family'] == "Debian"
+    - name: Habilitar UFW
+      ufw:
+        state: enabled
+        policy: deny
+      when: when: ansible_facts['os_family'] == "Debian"
+    - name: Habilitar el log
+      ufw:
+        logging: 'on'
+      when: when: ansible_facts['os_family'] == "Debian"
+    - name: abrir el firewall para 22
+      ufw:
+        rule: allow
+        port: "22"
+        proto: tcp
+      when: when: ansible_facts['os_family'] == "Debian"
+    - name: abrir el firewall para 3306
+      ufw:
+        rule: allow
+        port: "3306"
+        proto: tcp
+      when: when: ansible_facts['os_family'] == "Debian"
+    - name: Set MariaDB root password for 127.0.0.1, localhost
+      mysql_user:
+        name: root
+        password: "{{ mysql_root_password }}"
+        host: "{{ item }}"
+        login_user: root
+        login_password: "{{ mysql_root_password }}"
+        #login_unix_socket: "{{ mariadb_socket }}"
+        state: present
+      with_items:
+        - 127.0.0.1
+        - localhost
+      #when: check_passwd_root.rc == 0
+      notify:
+      - Flush Priviliges
+    - name: Remove all anonymous user
+      mysql_user:
+        login_user: root
+        login_password: "{{ mysql_root_password }}"
+        name: 'test'
+        host_all: yes
+        state: absent
+      notify:
+      - Flush Priviliges
+    - name: Create Database
+      mysql_db:
+        name: "{{ database_name }}"
+        login_user: root
+        login_password: "{{ mysql_root_password }}"
+        state: present
+    - name: Create mysql User defined database
+      mysql_user:
+        name: "{{ database_user }}"
+        password: "{{ database_password }}"
+        priv: '{{ database_name }}.*:{{ mysql.privileges }}'
+        login_user: root
+        login_password: "{{ mysql_root_password }}"
+        state: present
+      notify:
+      - Flush Priviliges
+...

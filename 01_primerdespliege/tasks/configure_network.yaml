@@ -1,0 +1,32 @@
+---
+- name: Configuración de red
+  hosts: all
+  tasks:
+    - name: Cnfigura la red en Rocky
+      template:
+        src: ../templates/rocky8_network.j2
+        dest: /etc/sysconfig/network-scripts/ifcfg-{{ ansible_default_ipv4['interface'] }}
+        owner: root
+        group: root
+        mode: '0644'
+      when: ansible_facts['os_family'] == "Rocky"
+      notify:
+      - Restart network rocky
+    - name: Cnfigura la red en Ubuntu
+      template:
+        src: ../templates/ubuntu2204_network.j2
+        dest: /etc/netplan/50-cloud-init.yaml
+        owner: root
+        group: root
+        mode: '0644'
+      when: ansible_facts['os_family'] == "Debian"
+      notify:
+      - Restart network ubuntu
+  handlers:
+    - name: Restart network rocky
+      service:
+        name: network
+        state: restarted
+    - name: Restart network ubuntu
+      shell: netplan apply
+...

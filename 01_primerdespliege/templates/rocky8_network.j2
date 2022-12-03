@@ -1,0 +1,17 @@
+DEVICE={{ ansible_default_ipv4['interface'] }}
+BOOTPROTO=static
+ONBOOT=yes
+HWADDR={{ ansible_default_ipv4['macaddress'] }}
+DEFROUTE=yes
+NAME={{ ansible_default_ipv4['interface'] }}
+HOSTNAME=test
+TYPE=Ethernet
+MTU=
+DHCP_HOSTNAME=test
+IPV6INIT=yes
+IPADDR={{ ansible_default_ipv4['address'] }}
+PREFIX=24
+GATEWAY={{ ansible_default_ipv4['gateway'] }}
+DNS1=8.8.8.8
+DNS2=8.8.4.4
+

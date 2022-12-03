@@ -1,0 +1,12 @@
+[rocky8]
+rocky8-nginx
+rocky8-mysql
+[ubuntu]
+ubuntu-nginx
+ubuntu-mysql
+[webservers]
+rocky8-nginx
+ubuntu-nginx
+[databases]
+ubuntu-mysql
+rocky8-mysql

@@ -1,0 +1,45 @@
+---
+- name: Instalacion de nginx
+  hosts: webservers
+  vars:
+    - repo_software:
+      - nginx
+      - vim
+  tasks:
+    - name: Instalando el paquete nginx
+      package:
+        name: "{{ repo_software }}"
+        state: latest
+    - name: Servicio Nginx arrancado
+      service:
+        name: nginx
+        state: started
+        enabled: true
+    - name: Habilitar UFW
+      ufw:
+        state: enabled
+        policy: deny
+      when: when: ansible_facts['os_family'] == "Debian"
+    - name: Habilitar el log
+      ufw:
+        logging: 'on'
+      when: when: ansible_facts['os_family'] == "Debian"
+    - name: abrir el firewall para 22
+      ufw:
+        rule: allow
+        port: "22"
+        proto: tcp
+      when: when: ansible_facts['os_family'] == "Debian"
+    - name: abrir el firewall para 80
+      ufw:
+        rule: allow
+        port: "80"
+        proto: tcp
+      when: when: ansible_facts['os_family'] == "Debian"
+    - name: abrir el firewall para 443
+      ufw:
+        rule: allow
+        port: "443"
+        proto: tcp
+      when: when: ansible_facts['os_family'] == "Debian"
+...
