@@ -2,26 +2,26 @@
 
 ## Ejercicio 1 / Primer despliegue
 
-├── ansible.cfg
-├── inventory-dns
-├── main.yaml
-├── tasks
-│   ├── configure_network.yaml
-│   ├── install_mysql.yaml
-│   └── install_nginx.yaml
-├── templates
-│   ├── rocky8_network.j2
-│   └── ubuntu2204_network.j2
-└── vars
-    └── databases
-        └── vars.yaml
+├── ansible.cfg\
+├── inventory-dns\
+├── main.yaml\
+├── tasks\
+│   ├── configure_network.yaml\
+│   ├── install_mysql.yaml\
+│   └── install_nginx.yaml\
+├── templates\
+│   ├── rocky8_network.j2\
+│   └── ubuntu2204_network.j2\
+└── vars\
+    └── databases\
+        └── vars.yaml\
 
 En este ejercicio, cuando se lanza el playbook main.yaml ubicado en la raíz del directorio se importan los playbooks ubicados en la carpeta 'tasks' en el siguiente orden.
 
 ### tasks/configure_network.yaml
 Se ejecuta para todos los hosts y configura la red en los hosts haciendo uso de condiciones según su distribución.
 
-En los hosts con distribución Debian se carga la plantilla 'templates/ubuntu2204_network.j2' haciendo el uso del módulo template de ansible, en el caso de que lo haya realizado lanza el handler 'Restart network ubuntu' haciendo uso del modulo shell.
+En los hosts con distribución Debian se carga la plantilla 'templates/ubuntu2204_network.j2' haciendo el uso del módulo template de ansible, en el caso de que lo haya realizado lanza el handler 'Restart network ubuntu' utilizando el módulo shell.
 
 De igual manera, si la distribución es Rocky, hace lo propio con la plantilla 'templates/rocky8_network.j2' y en el caso de que la hubiese cambiado lanza el handler 'Restart network rocky'
 
@@ -41,4 +41,13 @@ Se ejecutará para los hosts configurados en el grupo 'webservers' del inventory
 
 Configuramos una lista con los paquetes a instalar, lanzamos la instalación de esos paquetes con el módulo 'package' y verificamos que el servicio está arrancado con el módulo 'service'.
 
-Después habilitamos los puertos en el firewall según su distribución.
+Después habilitamos los puertos en el firewall según su distribución. De momento sólo he realizado las tareas para ufw, no estoy familiarizado con Rockylinux.
+
+## Ejercicio 2 / Despliegue de un docker-compose.yaml
+
+En este ejercicio se carga un fichero docker-compose.yaml con la configuración para lanzar un servidor mysql y wordpress. Cuando se lanza el playbook 'tasks/wordpress_stack.yaml' afectando solamente a los host agrupados en el grupo 'docker' se crea el directorio '/home/alumno/deploy' con el módulo file y después se realiza un bucle con el módulo copy para la copia de todos los ficheros que se necesiten, en este caso de la carpeta 'files' solo se cogerá 'docker-compose.yaml' y se copia en  '/home/alumno/deploy/docker-compose.yaml'
+
+Seguidamente, se lanza con el módulo docker_compose la ejecución del fichero compose anteriormente copiado generando así los contenedores, tras unos segundos después de levantar los servicios se podrá configurar wordpress accediendo con el navegador a la dirección de la máquina en el puerto expuesto en el fichero compose.
+
+## Ejercicio 3 / Manejando vaults
+
