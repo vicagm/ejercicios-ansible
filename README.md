@@ -1,7 +1,6 @@
 # Ejercicios curso ansible thinktic
 
 ## Ejercicio 1 / Primer despliegue
-
 └── ansible.cfg\
 └── inventory-dns\
 └── main.yaml\
@@ -14,7 +13,7 @@
     └── ubuntu2204_network.j2\
 └── vars\
     └── databases\
-        └── vars.yaml\
+        └── vars.yaml
 
 En este ejercicio, cuando se lanza el playbook 'main.yaml' ubicado en la raíz del directorio se importan los playbooks ubicados en la carpeta 'tasks' en el siguiente orden.
 
@@ -44,26 +43,24 @@ Configuramos una lista con los paquetes a instalar, lanzamos la instalación de 
 Después habilitamos los puertos en el firewall según su distribución. De momento sólo he realizado las tareas para ufw, no estoy familiarizado con Rockylinux.
 
 ## Ejercicio 2 / Despliegue de un docker-compose.yaml
-
 └── ansible.cfg\
 └── files\
     └── docker-compose.yaml\
 └── inventory-dns\
 └── tasks\
-    └── wordpress_stack.yaml\
+    └── wordpress_stack.yaml
 
 En este ejercicio se carga un fichero docker-compose.yaml con la configuración para lanzar un servidor mysql y wordpress. Cuando se lanza el playbook 'tasks/wordpress_stack.yaml' afectando solamente a los host agrupados en el grupo 'docker' se crea el directorio '/home/alumno/deploy' con el módulo 'file' y después se realiza un bucle con el módulo 'copy' para la copia de todos los ficheros que se necesiten, en este caso de la carpeta 'files' solo se cogerá 'docker-compose.yaml' y se copia en  '/home/alumno/deploy/docker-compose.yaml'
 
 Seguidamente, se lanza con el módulo 'docker_compose' la ejecución del fichero compose anteriormente copiado generando así los contenedores, tras unos segundos después de levantar los servicios se podrá configurar wordpress accediendo con el navegador a la dirección de la máquina en el puerto expuesto en el fichero compose.
 
 ## Ejercicio 3 / Manejando vaults
-
 └── 50-cloud-init.yaml\
 └── ansible.cfg\
 └── inventory\
 └── inventory-dns\
 └── tasks.yaml\
-└── vars.yaml\
+└── vars.yaml
 
 En este ejercicio, se hace uso de vaults para encriptar el fichero de variables (vars.yaml) que se le pasa al playbook (tasks.yaml).
 
