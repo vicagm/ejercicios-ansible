@@ -2,16 +2,16 @@
 
 ## Ejercicio 1 / Primer despliegue
 
-├── ansible.cfg\
-├── inventory-dns\
-├── main.yaml\
-├── tasks\
-│   ├── configure_network.yaml\
-│   ├── install_mysql.yaml\
-│   └── install_nginx.yaml\
-├── templates\
-│   ├── rocky8_network.j2\
-│   └── ubuntu2204_network.j2\
+└── ansible.cfg\
+└── inventory-dns\
+└── main.yaml\
+└── tasks\
+    └── configure_network.yaml\
+    └── install_mysql.yaml\
+    └── install_nginx.yaml\
+└── templates\
+    └── rocky8_network.j2\
+    └── ubuntu2204_network.j2\
 └── vars\
     └── databases\
         └── vars.yaml\
@@ -44,6 +44,13 @@ Configuramos una lista con los paquetes a instalar, lanzamos la instalación de 
 Después habilitamos los puertos en el firewall según su distribución. De momento sólo he realizado las tareas para ufw, no estoy familiarizado con Rockylinux.
 
 ## Ejercicio 2 / Despliegue de un docker-compose.yaml
+
+└── ansible.cfg\
+└── files\
+    └── docker-compose.yaml\
+└── inventory-dns\
+└── tasks\
+    └── wordpress_stack.yaml\
 
 En este ejercicio se carga un fichero docker-compose.yaml con la configuración para lanzar un servidor mysql y wordpress. Cuando se lanza el playbook 'tasks/wordpress_stack.yaml' afectando solamente a los host agrupados en el grupo 'docker' se crea el directorio '/home/alumno/deploy' con el módulo file y después se realiza un bucle con el módulo copy para la copia de todos los ficheros que se necesiten, en este caso de la carpeta 'files' solo se cogerá 'docker-compose.yaml' y se copia en  '/home/alumno/deploy/docker-compose.yaml'
 
