@@ -54,7 +54,7 @@ En este ejercicio se carga un fichero docker-compose.yaml con la configuración 
 
 Seguidamente, se lanza con el módulo 'docker_compose' la ejecución del fichero compose anteriormente copiado generando así los contenedores, tras unos segundos después de levantar los servicios se podrá configurar wordpress accediendo con el navegador a la dirección de la máquina en el puerto expuesto en el fichero compose.
 
-## Ejercicio 3 / Manejando vaults
+## Ejercicio 3 / Manejando vaults
 └── 50-cloud-init.yaml\
 └── ansible.cfg\
 └── inventory\
